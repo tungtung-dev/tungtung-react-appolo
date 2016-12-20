@@ -54,19 +54,25 @@
   },
   "dependencies": {
     "apollo-client": "^0.5.23",
+    "core-decorators": "^0.15.0",
     "graphql-anywhere": "^1.1.2",
     "graphql-tag": "^1.1.2",
     "node-sass": "^4.1.0",
     "react": "^15.4.1",
+    "react-addons-css-transition-group": "^15.4.1",
+    "react-addons-transition-group": "^15.4.1",
     "react-apollo": "^0.7.1",
     "react-dom": "^15.4.1",
     "react-redux": "^5.0.1",
     "react-router": "^3.0.0",
     "react-router-redux": "^4.0.7",
+    "reactstrap": "^3.9.5",
     "redux": "^3.6.0",
     "redux-await": "^5.0.1",
+    "redux-form": "^6.3.2",
     "redux-thunk": "^2.1.0",
-    "sass-loader": "^4.1.0"
+    "sass-loader": "^4.1.0",
+    "sweetalert2": "^6.2.3"
   },
   "scripts": {
     "start": "node scripts/start.js",
