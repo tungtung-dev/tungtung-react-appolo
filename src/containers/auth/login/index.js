@@ -1,12 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import {autobind} from 'core-decorators';
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux';
+import {push} from 'react-router-redux';
 import {Col} from 'reactstrap';
-import {withRouter} from 'react-router';
 import {reduxForm, Field} from 'redux-form';
 import {graphql} from 'react-apollo';
 import swal from 'sweetalert2';
 import gpl from 'graphql-tag';
-import {setAuthToken} from 'utils/auth';
+import authAction from 'redux/actions/authAction';
 
 @reduxForm({
     form: 'loginForm'
@@ -35,8 +37,12 @@ const mutationLogin = gpl`
     }
 `
 @graphql(mutationLogin, {name: 'loginUser'})
-@withRouter
+@connect(() => ({}), dispatch => bindActionCreators({...authAction, push}, dispatch))
 export default class Login extends Component {
+    static propTypes = {
+        loginUser: PropTypes.func
+    }
+
     @autobind
     handleSubmit(values) {
         const {username, password} = values;
@@ -48,11 +54,11 @@ export default class Login extends Component {
         }).then(userRes => {
             const {loginUser: {success, token, user}} = userRes.data;
             if(success){
-                setAuthToken(token);
+                this.props.setAuthUser({token, user});
                 swal({
                     title: 'Login Success'
                 }).then(() => {
-                    this.props.router.push('/');
+                    this.props.push('/');
                 })
             }
         })
@@ -60,6 +66,7 @@ export default class Login extends Component {
 
     render() {
         return <Col md={{size: 6, offset: 3}}>
+            <h1>Login</h1>
             <LoginForm onSubmit={this.handleSubmit}/>
         </Col>
     }
