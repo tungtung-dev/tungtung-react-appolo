@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "apollo-client": "^0.5.23",
+    "graphql-anywhere": "^1.1.2",
     "graphql-tag": "^1.1.2",
     "node-sass": "^4.1.0",
     "react": "^15.4.1",
