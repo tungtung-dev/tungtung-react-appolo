@@ -8,7 +8,6 @@ If you change port in GraphQL API please change Graph QPI in `src/config.js`
 ## Installation
 
 ```
-git checkout blog
 yarn install # or
 npm install
 ```
