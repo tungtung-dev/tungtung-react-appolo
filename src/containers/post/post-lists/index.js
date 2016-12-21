@@ -39,9 +39,8 @@ export default class PostLists extends Component {
     }
 
     render() {
-        const {loading, posts, users} = this.props;
+        const {loading, posts} = this.props;
         return <Col md={{size: 8, offset: 2}}>
-            {users && users.map(user => <div>{user.username}</div>)}
             {posts.data.map(post => <div key={post._id} className="post">
                 <h4><Link to={`/posts/${post._id}`}>{post.title}</Link></h4>
                 <p>{post.description}</p>
