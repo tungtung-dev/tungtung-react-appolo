@@ -31,7 +31,8 @@ export default class PostLists extends Component {
         posts: PropTypes.shape({
             data: PropTypes.array,
             pagination: PropTypes.object
-        })
+        }),
+        loadMore: PropTypes.func
     }
 
     render() {
@@ -44,7 +45,7 @@ export default class PostLists extends Component {
                 <hr/>
             </div>)}
             {loading && <div className="loading">Loading ...</div>}
-            {checkLoadMore(posts.pagination) && <button className="btn btn-primary" onClick={this.props.loadMorePosts}>
+            {checkLoadMore(posts.pagination) && <button className="btn btn-primary" onClick={this.props.loadMore}>
                 Load more
             </button>}
         </Col>

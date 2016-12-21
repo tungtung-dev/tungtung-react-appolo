@@ -21,7 +21,7 @@ export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQ
         props: ({data: {loading, posts, fetchMore}, data}) => ({
             loading,
             [keyQuery]: data[keyQuery] ? data[keyQuery] : {data: [], pagination: {}},
-            loadMorePosts(){
+            loadMore(){
                 return fetchMore({
                     variables: {
                         page: getDeepObject(data[keyQuery], 1, 'pagination', 'page') + 1
@@ -44,18 +44,28 @@ export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQ
     })
 }
 
-export function graphqlAutoPassProps(graphqlQuery, {options, otherCustom = {}, keysPassProps = []}) {
+export function getPassProps(keysPassProps = [], data = {}){
+    let passProps = {};
+    keysPassProps.map((keyPassProps) => {
+        passProps[keyPassProps] = data[keyPassProps]
+    })
+    return {
+        loading: data.loading,
+        ...passProps
+    }
+}
+
+export function graphqlAutoPassProps(graphqlQuery, {options, props, otherCustom = {}, keysPassProps = []}) {
     return graphql(graphqlQuery, {
         options,
-        props: ({data}) => {
-            let passProps = {};
-            keysPassProps.map((keyPassProps) => {
-                passProps[keyPassProps] = data[keyPassProps]
-            })
-            return {
-                loading: data.loading,
-                ...passProps
+        props: (...args) => {
+            if(props){
+                return {
+                    ...props(...args),
+                    ...getPassProps(keysPassProps, args[0].data)
+                }
             }
+            return getPassProps(keysPassProps, args[0].data);
         },
         ...otherCustom
     })
