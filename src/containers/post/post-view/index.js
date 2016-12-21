@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import gpl from 'graphql-tag';
 import {Link} from 'react-router';
-import {Col} from 'reactstrap';
 import {graphqlAutoPassProps} from 'utils/graphql';
 import Comment from '../../comment';
 
@@ -16,13 +15,6 @@ const postQuery = gpl`
                 username
             }
         }
-        comments(postId: $id) {
-            _id,
-            content,
-            user{
-                username
-            }
-        }
     }
 `
 
@@ -32,7 +24,7 @@ const postQuery = gpl`
             id: ownProps.params.postId
         }
     }),
-    keysPassProps: ['post', 'comments']
+    keysPassProps: ['post']
 })
 export default class PostView extends Component {
     static propTypes = {
@@ -41,29 +33,16 @@ export default class PostView extends Component {
             title: PropTypes.string,
             description: PropTypes.string,
             content: PropTypes.string
-        }),
-        comments: PropTypes.arrayOf(PropTypes.shape({
-            _id: PropTypes.string,
-            content: PropTypes.string
-        }))
-    }
-
-    renderComments() {
-        const {comments} = this.props;
-        return <div>
-            <h4>Comments</h4>
-            {comments && comments.map(comment => <div key={comment._id}>
-                {comment.content} by {comment.user.username}
-                <hr/>
-            </div>)}
-        </div>
+        })
     }
 
     renderPostPreview() {
         const {post} = this.props;
         return <div>
             {post && <div className="post">
-                <h4><Link to={`/posts/${post._id}`}>{post.title}</Link></h4>
+                <h4>
+                    {post.title} - <Link to={`/posts/edit/${post._id}`}>Edit</Link>
+                </h4>
                 <p>{post.description}</p>
                 <div>{post.content}</div>
                 <hr/>
@@ -77,12 +56,12 @@ export default class PostView extends Component {
 
     render() {
         const {loading} = this.props;
-        return <Col md={{size: 8, offset: 2}}>
+        return <div>
             {loading && <p>Loading ...</p>}
             {this.renderPostPreview()}
             <hr/>
             <Comment.Lists postId={this.props.params.postId}/>
-        </Col>
+        </div>
     }
 }
 PostView.propTypes = {}

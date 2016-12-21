@@ -66,13 +66,16 @@ export default class CommentLists extends Component {
                 postId: this.props.postId
             }
         }).then(commentRes => {
-            this.props.data.subscribeToMore(commentRes).then((data) => {
-                console.log(data)
-            });
+            this.setState({
+                comments: [
+                    commentRes.data.createComment,
+                    ...this.state.comments
+                ]
+            })
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (!Equal(prevProps.comments, this.props.comments)) {
             this.setState({comments: this.props.comments});
         }
@@ -82,7 +85,8 @@ export default class CommentLists extends Component {
         return <div>
             <h4>Comments</h4>
             <CommentForm onSubmit={this.handleSubmit}/>
-            {this.state.comments.length && this.state.comments.map(comment => <div key={comment._id}>
+            <div style={{marginTop: 10}}>&nbsp;</div>
+            {this.state.comments.length > 0 && this.state.comments.map(comment => <div key={comment._id}>
                 {comment.content} by {comment.user.username}
                 <hr/>
             </div>)}

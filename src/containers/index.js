@@ -1,6 +1,7 @@
+import AppContainer from './app-container';
+import MainLayout from './main-layout';
 import Auth from './auth';
 import Post from './post';
-import MainLayout from './main-layout';
 
-export {Auth, Post, MainLayout}
-export default {Auth, Post, MainLayout}
+export {AppContainer, MainLayout, Auth, Post}
+export default {AppContainer, MainLayout, Auth, Post}

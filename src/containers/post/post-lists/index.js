@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import gpl from 'graphql-tag';
 import {Link} from 'react-router';
-import {Col} from 'reactstrap';
 import {graphqlWithPagination} from 'utils/graphql';
 import {checkLoadMore} from 'utils';
 
@@ -40,7 +39,7 @@ export default class PostLists extends Component {
 
     render() {
         const {loading, posts} = this.props;
-        return <Col md={{size: 8, offset: 2}}>
+        return <div>
             {posts.data.map(post => <div key={post._id} className="post">
                 <h4><Link to={`/posts/${post._id}`}>{post.title}</Link></h4>
                 <p>{post.description}</p>
@@ -51,7 +50,7 @@ export default class PostLists extends Component {
             {checkLoadMore(posts.pagination) && <button className="btn btn-primary" onClick={this.props.loadMore}>
                 Load more
             </button>}
-        </Col>
+        </div>
     }
 }
 

@@ -3,7 +3,6 @@ import {autobind} from 'core-decorators';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import {push} from 'react-router-redux';
-import {Col} from 'reactstrap';
 import {reduxForm, Field} from 'redux-form';
 import {graphql} from 'react-apollo';
 import swal from 'sweetalert2';
@@ -65,10 +64,10 @@ export default class Login extends Component {
     }
 
     render() {
-        return <Col md={{size: 6, offset: 3}}>
+        return <div>
             <h1>Login</h1>
             <LoginForm onSubmit={this.handleSubmit}/>
-        </Col>
+        </div>
     }
 }
 Login.propTypes = {}

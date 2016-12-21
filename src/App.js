@@ -7,7 +7,7 @@ import {getAuthToken} from 'utils/auth';
 
 import "sweetalert2/dist/sweetalert2.min.css"
 
-import {Post, MainLayout, Auth} from './containers'
+import {AppContainer, Post, Auth} from './containers'
 
 const networkInterface = createNetworkInterface({uri: 'http://localhost:8080/graphql'});
 networkInterface.use([{
@@ -27,13 +27,14 @@ const store = configureStore({}, client, browserHistory);
 export default () => {
     return <ApolloProvider store={store} client={client}>
         <Router history={browserHistory}>
-            <Route component={MainLayout}>
+            <Route component={AppContainer}>
                 <Route path='/' component={Post.Lists}/>
                 <Route path='/posts/create' component={Post.Create}/>
                 <Route path='/posts/:postId' component={Post.View}/>
                 <Route path='/posts/edit/:postId' component={Post.Edit}/>
                 <Route path='/auth/login' component={Auth.Login}/>
                 <Route path='/auth/register' component={Auth.Register}/>
+                <Route path='/auth/logout' component={Auth.Logout}/>
             </Route>
         </Router>
     </ApolloProvider>

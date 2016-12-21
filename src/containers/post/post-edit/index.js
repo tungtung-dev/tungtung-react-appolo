@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {autobind} from 'core-decorators';
-import {Col} from 'reactstrap';
+import {Link} from 'react-router';
 import gql from 'graphql-tag';
 import {graphql} from 'react-apollo';
 import {graphqlAutoPassProps} from 'utils/graphql';
+import swal from 'sweetalert2';
 import PostForm from '../post-form';
 
 const mutationQuery = gql`
@@ -36,7 +37,7 @@ const postQuery = gql`
     }),
     keysPassProps: ['post']
 })
-export default class PostCreate extends Component {
+export default class PostEdit extends Component {
     static propTypes = {
         updatePost: PropTypes.func,
         post: PropTypes.shape({
@@ -57,15 +58,20 @@ export default class PostCreate extends Component {
                 content
             }
         }).then(postRes => {
-            console.log('update success');
+            swal({
+                title: "Update post sucess"
+            });
         })
     }
 
     render() {
         const {post} = this.props;
-        return <Col md={{size: 6, offset: 3}}>
+        return <div>
             <h1>Edit Post</h1>
-            {post && <PostForm initialValues={post} onSubmit={this.handleSubmit}/>}
-        </Col>
+            {post && <div>
+                <PostForm initialValues={post} onSubmit={this.handleSubmit}/>
+                <Link to={`/posts/${post._id}`} className="btn btn-block btn-success">View post</Link>
+            </div>}
+        </div>
     }
 }

@@ -1,4 +1,5 @@
 import Flex from './flex';
+import Header from './header';
 
-export {Flex}
-export default {Flex}
+export {Flex, Header}
+export default {Flex, Header}
