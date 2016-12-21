@@ -30,13 +30,17 @@ export function getDeepObject(object, defaultValue, ...keysDeep) {
                 value = cloneObject[keyDeep];
                 cloneObject = cloneObject[keyDeep];
             }
+            else {
+                value = defaultValue;
+                break;
+            }
         }
         else {
             if (object && object[keyDeep]) {
                 value = object[keyDeep];
                 cloneObject = object[keyDeep];
             } else {
-                value = defaultValue;
+                break;
             }
         }
     }
@@ -60,4 +64,10 @@ export function cleanProps(clean_key_props, props) {
         return {}
     });
     return newProps;
+}
+
+export function checkLoadMore({itemPerPage, page, totalItem}) {
+    if (!itemPerPage) return false;
+    if (page * itemPerPage < totalItem) return true;
+    return false;
 }
