@@ -44,6 +44,24 @@ export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQ
     })
 }
 
+export function graphqlAutoPassProps(graphqlQuery, {options, otherCustom = {}, keysPassProps = []}) {
+    return graphql(graphqlQuery, {
+        options,
+        props: ({data}) => {
+            let passProps = {};
+            keysPassProps.map((keyPassProps) => {
+                passProps[keyPassProps] = data[keyPassProps]
+            })
+            return {
+                loading: data.loading,
+                ...passProps
+            }
+        },
+        ...otherCustom
+    })
+}
+
 export default {
-    graphqlWithPagination
+    graphqlWithPagination,
+    graphqlAutoPassProps
 }
