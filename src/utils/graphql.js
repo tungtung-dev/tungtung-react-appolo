@@ -2,6 +2,18 @@ import {graphql} from 'react-apollo';
 import update from 'react/lib/update';
 import {getDeepObject} from './index';
 
+export function getPassProps(keysPassProps = [], data = {}){
+    let passProps = {};
+    keysPassProps.map((keyPassProps) => {
+        passProps[keyPassProps] = data[keyPassProps];
+        return {}
+    })
+    return {
+        loading: data.loading,
+        ...passProps
+    }
+}
+
 /**
  * Custom props dispatch loadMorePosts
  * @param graphqlQuery
@@ -10,7 +22,7 @@ import {getDeepObject} from './index';
  * @param keyQuery - String - Key top query from graphlql tag
  * @returns {*}
  */
-export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQuery = 'posts'}) {
+export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQuery = 'posts', keysPassProps = []}) {
     return graphql(graphqlQuery, {
         options: (ownProps) => ({
             variables: {
@@ -18,11 +30,11 @@ export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQ
                 page
             }
         }),
-        props: ({data: {loading, posts, fetchMore}, data}) => ({
-            loading,
+        props: ({data}) => ({
             [keyQuery]: data[keyQuery] ? data[keyQuery] : {data: [], pagination: {}},
+            ...getPassProps(keysPassProps, data),
             loadMore(){
-                return fetchMore({
+                return data.fetchMore({
                     variables: {
                         page: getDeepObject(data[keyQuery], 1, 'pagination', 'page') + 1
                     },
@@ -44,17 +56,6 @@ export function graphqlWithPagination(graphqlQuery, {itemPerPage, page = 1, keyQ
     })
 }
 
-export function getPassProps(keysPassProps = [], data = {}){
-    let passProps = {};
-    keysPassProps.map((keyPassProps) => {
-        passProps[keyPassProps] = data[keyPassProps]
-    })
-    return {
-        loading: data.loading,
-        ...passProps
-    }
-}
-
 export function graphqlAutoPassProps(graphqlQuery, {options, props, otherCustom = {}, keysPassProps = []}) {
     return graphql(graphqlQuery, {
         options,
@@ -62,10 +63,14 @@ export function graphqlAutoPassProps(graphqlQuery, {options, props, otherCustom 
             if(props){
                 return {
                     ...props(...args),
-                    ...getPassProps(keysPassProps, args[0].data)
+                    ...getPassProps(keysPassProps, args[0].data),
+                    ...args
                 }
             }
-            return getPassProps(keysPassProps, args[0].data);
+            return {
+                ...getPassProps(keysPassProps, args[0].data),
+                data: args[0].data
+            };
         },
         ...otherCustom
     })

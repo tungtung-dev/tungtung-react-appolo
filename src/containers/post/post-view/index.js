@@ -2,8 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import gpl from 'graphql-tag';
 import {Link} from 'react-router';
 import {Col} from 'reactstrap';
-import {graphql} from 'react-apollo';
 import {graphqlAutoPassProps} from 'utils/graphql';
+import Comment from '../../comment';
 
 const postQuery = gpl`
     query postQuery($id: String!){
@@ -32,18 +32,23 @@ const postQuery = gpl`
             id: ownProps.params.postId
         }
     }),
-    keysPassProps: ['post','comments']
+    keysPassProps: ['post', 'comments']
 })
 export default class PostView extends Component {
     static propTypes = {
-        post: PropTypes.object,
+        post: PropTypes.shape({
+            _id: PropTypes.string,
+            title: PropTypes.string,
+            description: PropTypes.string,
+            content: PropTypes.string
+        }),
         comments: PropTypes.arrayOf(PropTypes.shape({
             _id: PropTypes.string,
             content: PropTypes.string
         }))
     }
 
-    renderComments(){
+    renderComments() {
         const {comments} = this.props;
         return <div>
             <h4>Comments</h4>
@@ -54,7 +59,7 @@ export default class PostView extends Component {
         </div>
     }
 
-    renderPostPreview(){
+    renderPostPreview() {
         const {post} = this.props;
         return <div>
             {post && <div className="post">
@@ -76,7 +81,7 @@ export default class PostView extends Component {
             {loading && <p>Loading ...</p>}
             {this.renderPostPreview()}
             <hr/>
-            {this.renderComments()}
+            <Comment.Lists postId={this.props.params.postId}/>
         </Col>
     }
 }

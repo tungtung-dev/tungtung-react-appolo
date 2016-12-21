@@ -31,6 +31,7 @@ export default () => {
                 <Route path='/' component={Post.Lists}/>
                 <Route path='/posts/create' component={Post.Create}/>
                 <Route path='/posts/:postId' component={Post.View}/>
+                <Route path='/posts/edit/:postId' component={Post.Edit}/>
                 <Route path='/auth/login' component={Auth.Login}/>
                 <Route path='/auth/register' component={Auth.Register}/>
             </Route>
