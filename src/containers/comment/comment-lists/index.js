@@ -2,12 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import gpl from 'graphql-tag';
 import {autobind} from 'core-decorators';
 import {graphqlAutoPassProps} from 'utils/graphql';
-import {graphql} from 'react-apollo';
-import Equal from 'deep-equal';
 import CommentForm from '../comment-form';
 
+import {mutationCreateComment, subscriptionCreateComment} from './utils';
+
 const commentQuery = gpl`
-    query getComments($postId: String!){
+    query Comments($postId: String!){
         comments(postId: $postId){
             _id,
             content,
@@ -18,8 +18,20 @@ const commentQuery = gpl`
     }
 `
 
+const subscribeQuery = gpl`
+    subscription SubCommentAdded($postId: ID!){
+        onCreateComment(postId: $postId){
+            _id,
+            content,
+            user {
+                username
+            }
+        }
+    }
+`
+
 const commentMutation = gpl`
-    mutation addComment($content: String!, $postId: String!){
+    mutation AddComment($content: String!, $postId: String!){
         createComment(content: $content, postId: $postId){
             _id,
             content,
@@ -36,17 +48,13 @@ const commentMutation = gpl`
             postId: ownProps.postId
         }
     }),
+    props: ({data: {subscribeToMore}}) => ({
+        subscribeToMore
+    }),
     keysPassProps: ['comments']
 })
-@graphql(commentMutation, {name: 'createComment'})
+@mutationCreateComment(commentMutation)
 export default class CommentLists extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            comments: props.comments ? props.comments : []
-        }
-    }
-
     static propTypes = {
         postId: PropTypes.string,
         comments: PropTypes.arrayOf(PropTypes.shape({
@@ -55,30 +63,23 @@ export default class CommentLists extends Component {
             user: PropTypes.shape({
                 username: PropTypes.string
             })
-        }))
+        })),
+        subscribeToMore: PropTypes.func
     }
 
     @autobind
     handleSubmit({content}) {
         this.props.createComment({
-            variables: {
-                content,
-                postId: this.props.postId
-            }
-        }).then(commentRes => {
-            this.setState({
-                comments: [
-                    commentRes.data.createComment,
-                    ...this.state.comments
-                ]
-            })
-        })
+            content,
+            postId: this.props.postId
+        });
     }
 
-    componentDidUpdate(prevProps) {
-        if (!Equal(prevProps.comments, this.props.comments)) {
-            this.setState({comments: this.props.comments});
-        }
+    componentDidMount() {
+        this.subscribe = this.props.subscribeToMore(subscriptionCreateComment({
+            query: subscribeQuery,
+            postId: this.props.postId
+        }))
     }
 
     render() {
@@ -86,7 +87,7 @@ export default class CommentLists extends Component {
             <h4>Comments</h4>
             <CommentForm onSubmit={this.handleSubmit}/>
             <div style={{marginTop: 10}}>&nbsp;</div>
-            {this.state.comments.length > 0 && this.state.comments.map(comment => <div key={comment._id}>
+            {this.props.comments && this.props.comments.map(comment => <div key={comment._id}>
                 {comment.content} by {comment.user.username}
                 <hr/>
             </div>)}

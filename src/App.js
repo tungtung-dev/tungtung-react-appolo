@@ -1,13 +1,17 @@
 import React from 'react';
 import ApolloClient, {createNetworkInterface} from 'apollo-client'
 import {ApolloProvider} from 'react-apollo';
+import {Client} from 'subscriptions-transport-ws';
 import {Router, Route, browserHistory} from 'react-router';
 import configureStore from 'redux/store/configureStore';
 import {getAuthToken} from 'utils/auth';
+import {addGraphQLSubscriptions} from 'utils';
 
 import "sweetalert2/dist/sweetalert2.min.css"
 
 import {AppContainer, Post, Auth} from './containers'
+
+const socketClient = new Client('ws://localhost:8081');
 
 const networkInterface = createNetworkInterface({uri: 'http://localhost:8080/graphql'});
 networkInterface.use([{
@@ -20,7 +24,9 @@ networkInterface.use([{
     }
 }]);
 
-const client = new ApolloClient({networkInterface})
+const networkInterfaceWithSubscription = addGraphQLSubscriptions(networkInterface, socketClient)
+
+const client = new ApolloClient({networkInterface: networkInterfaceWithSubscription});
 
 const store = configureStore({}, client, browserHistory);
 

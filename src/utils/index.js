@@ -1,3 +1,6 @@
+/* eslint-disable */
+import {print} from 'graphql-tag/printer';
+
 export function getStyleFromProps(prop_style_keys = [], props = {}) {
     let style = {};
     prop_style_keys.map((prop_style_key) => {
@@ -70,4 +73,27 @@ export function checkLoadMore({itemPerPage, page, totalItem}) {
     if (!itemPerPage) return false;
     if (page * itemPerPage < totalItem) return true;
     return false;
+}
+
+
+export function addGraphQLSubscriptions(networkInterface, wsClient) {
+    return Object.assign(networkInterface, {
+        subscribe: (request, handler) => wsClient.subscribe({
+            query: print(request.query),
+            variables: request.variables,
+        }, handler),
+        unsubscribe: (id) => {
+            wsClient.unsubscribe(id);
+        },
+    });
+    return {
+        ...networkInterface,
+        subscribe: (request, handler) => wsClient.subscribe({
+            query: print(request.query),
+            variables: request.variables,
+        }, handler),
+        unsubscribe: (id) => {
+            wsClient.unsubscribe(id);
+        }
+    }
 }
