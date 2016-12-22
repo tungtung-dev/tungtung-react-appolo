@@ -6,40 +6,41 @@ import CommentForm from '../comment-form';
 
 import {mutationCreateComment, subscriptionCreateComment} from './utils';
 
+const fragmentQuery = `
+    fragment getComment on CommentType {
+        _id,
+        content,
+        user {
+            username
+        }
+    }
+`
+
 const commentQuery = gpl`
     query Comments($postId: String!){
         comments(postId: $postId){
-            _id,
-            content,
-            user {
-                username
-            }
+            ...getComment
         }
     }
+    ${fragmentQuery}
 `
 
 const subscribeQuery = gpl`
     subscription SubCommentAdded($postId: ID!){
         onCreateComment(postId: $postId){
-            _id,
-            content,
-            user {
-                username
-            }
+           ...getComment
         }
     }
+    ${fragmentQuery}
 `
 
 const commentMutation = gpl`
     mutation AddComment($content: String!, $postId: String!){
         createComment(content: $content, postId: $postId){
-            _id,
-            content,
-            user {
-                username
-            }
+            ...getComment
         }
     }
+    ${fragmentQuery}
 `
 
 @graphqlAutoPassProps(commentQuery, {
