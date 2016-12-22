@@ -6,14 +6,15 @@ import {Router, Route, browserHistory} from 'react-router';
 import configureStore from 'redux/store/configureStore';
 import {getAuthToken} from 'utils/auth';
 import {addGraphQLSubscriptions} from 'utils';
+import config from 'config';
 
 import "sweetalert2/dist/sweetalert2.min.css"
 
 import {AppContainer, Post, Auth} from './containers'
 
-const socketClient = new Client('ws://localhost:8081');
+const socketClient = new Client(config.API_GRAPHQL_SOCKET);
 
-const networkInterface = createNetworkInterface({uri: 'http://localhost:8080/graphql'});
+const networkInterface = createNetworkInterface({uri: config.API_GRAPHQL});
 networkInterface.use([{
     applyMiddleware(req, next) {
         if (!req.options.headers) {
