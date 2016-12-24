@@ -19,6 +19,9 @@ export default class Header extends Component {
                 &nbsp;
                 <Link to="/auth/register">Register</Link>
             </Flex>}
+            <div className="flex">
+                Hello man
+            </div>
             {isAuthentication && <Flex justifyContent="space-between">
                 <Link to="/">Posts</Link>
                 <Flex justifyContent="flex-end">
